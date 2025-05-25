@@ -2,7 +2,9 @@
 <h1 align="center">Proyek UAS Komnum</h1>
 
 Nama : [**Muhammad Rafli**](https://github.com/MRafli127)
+
 NPM  : 2306250730
+
 kelas : Komputasi Numerik 02
 
 ### Case Study Chapman Part 6
