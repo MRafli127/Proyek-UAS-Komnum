@@ -8,10 +8,11 @@ NPM  : 2306250730
 kelas : Komputasi Numerik 02
 
 ### Case Study Chapman Part 6
-- [Numerical Methods for Engineers]([https://gdcboysang.ac.in/About/Droid/uploads/Numerical%20Methods.pdf](https://www.mbit.edu.in/wp-content/uploads/2020/05/Numerical_methods_for_engineers_for_engi.pdf)))
+- [Numerical Methods for Engineers](https://www.mbit.edu.in/wp-content/uploads/2020/05/Numerical_methods_for_engineers_for_engi.pdf)
 <div align="center">
   <img src="https://hackmd.io/_uploads/B1pf3-lzlg.png" alt="image" />
 </div>
+
 
 
 
