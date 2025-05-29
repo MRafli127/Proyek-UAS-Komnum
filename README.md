@@ -1,5 +1,5 @@
 
-<h1 align="center">Proyek UAS Komnum</h1>
+<h1 align="center">Proyek UAS Komputasi Numerik</h1>
 
 Nama : [**Muhammad Rafli**](https://github.com/MRafli127)
 
