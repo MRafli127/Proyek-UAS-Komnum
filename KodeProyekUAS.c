@@ -1,74 +1,62 @@
 #include <stdio.h>
 
-#define N 6  // Jumlahdata
-
-// Fungsi untuk menghitung laju perubahan temperatur (dT/dt) menggunakan metode beda hingga
-void hitungLajuPendinginan(double T[], double dt, double dTdt[]) {
-    for (int i = 0; i < N; i++) {
-        if (i == 0) {
-            // Titik awal (beda maju)
-            dTdt[i] = (T[i + 1] - T[i]) / dt;
-        } else if (i == N - 1) {
-            // Titik akhir (beda mundur)
-            dTdt[i] = (T[i] - T[i - 1]) / dt;
-        } else {
-            // Titik tengah (beda tengah)
-            dTdt[i] = (T[i + 1] - T[i - 1]) / (2 * dt);
-        }
-    }
-}
-
-// Fungsi untuk menghitung regresi linier untuk menemukan konstanta pendinginan k
-void regresiLinier(double x[], double y[], double sum_x, double sum_y, double sum_xy, double sum_x2, double *m, double *c) {
-    *m = (N * sum_xy - sum_x * sum_y) / (N * sum_x2 - sum_x * sum_x);
-    *c = (sum_y - (*m) * sum_x) / N;
-}
+#define N 6  // jumlah data
 
 int main() {
-    double T[N] = {80.0, 44.5, 30.0, 24.1, 21.7, 20.7}; // Data temperatur
-    double T_a = 20.0;  // Temperatur lingkungan (dalam °C)
-    double dTdt[N];  // Array untuk menyimpan hasil laju pendinginan
-    double dt = 5.0;  // Interval waktu (5 menit)
+    // Data waktu (menit)
+    double t[N] = {0, 5, 10, 15, 20, 25};
+    // Data suhu T (°C)
+    double T[N] = {80.0, 44.5, 30.0, 24.1, 21.7, 20.7};
+    // Suhu lingkungan
+    double Ta = 20.0;
+    // Interval waktu (menit)
+    double dt = 5.0;
 
-    hitungLajuPendinginan(T, dt, dTdt);
+    double dTdt[N];    // array turunan suhu
+    double x[N];       // T - Ta
+    double y[N];       // dT/dt
 
-    // Membuka file untuk menyimpan hasil CSV
-    FILE *file = fopen("output.csv", "w");
-    if (file == NULL) {
-        printf("Error opening file!\n");
-        return 1;
+    // Hitung dT/dt menggunakan beda hingga
+    
+    // Titik awal (beda maju)
+    dTdt[0] = (T[1] - T[0]) / dt;
+    // Titik tengah (beda tengah)
+    for (int i = 1; i < N - 1; i++) {
+        dTdt[i] = (T[i + 1] - T[i - 1]) / (2 * dt);
     }
-    // Menulis header ke file CSV
-    fprintf(file, "Waktu (menit),Temperatur (°C),dT/dt (°C/menit),T - T_a (°C)\n");
-    // Menulis data ke file CSV
+    // Titik akhir (beda mundur)
+    dTdt[N - 1] = (T[N - 1] - T[N - 2]) / dt;
+    
+    // Hitung x = T - Ta dan y = dT/dt
     for (int i = 0; i < N; i++) {
-        fprintf(file, "%d,%.2f,%.2f,%.2f\n", i * 5, T[i], dTdt[i], T[i] - T_a);
+        x[i] = T[i] - Ta;
+        y[i] = dTdt[i];
     }
 
-    // Perhitungan regresi linier
+    // Hitung regresi linier y = m*x + c
     double sum_x = 0, sum_y = 0, sum_xy = 0, sum_x2 = 0;
+
     for (int i = 0; i < N; i++) {
-        double x = T[i] - T_a;
-        double y = dTdt[i];
-        sum_x += x;
-        sum_y += y;
-        sum_xy += x * y;
-        sum_x2 += x * x;
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += x[i] * y[i];
+        sum_x2 += x[i] * x[i];
     }
 
-    // Variabel untuk slope (m) dan intercept (c)
-    double m, c;
-    regresiLinier(T, dTdt, sum_x, sum_y, sum_xy, sum_x2, &m, &c);
+    double m = (N * sum_xy - sum_x * sum_y) / (N * sum_x2 - sum_x * sum_x);
+    double c = (sum_y - m * sum_x) / N;
 
-    // Menulis hasil regresi linier ke file CSV
-    fprintf(file, "\nHasil Regresi Linier:\n");
-    fprintf(file, "Slope (m),%.3f\n", m);
-    fprintf(file, "Intercept (c),%.3f\n", c);
-    fprintf(file, "Konstanta pendinginan k,%.3f per menit\n", -m);
-    // Menutup file
-    fclose(file);
+    double k = -m;  // k adalah -m dari regresi
 
-    printf("Data telah disimpan ke output.csv\n");
+    // Cetak hasil
+    printf("Waktu (menit)\tT (°C)\t\t dT/dt (°C/menit)\t T - Ta (°C)\n");
+    for (int i = 0; i < N; i++) {
+        printf("%10.1f\t%7.2f\t%17.4f\t%11.2f\n", t[i], T[i], dTdt[i], x[i]);
+    }
+
+    printf("\nHasil regresi linier: y = m*x + c\n");
+    printf("m = %.4f, c = %.4f\n", m, c);
+    printf("Konstanta pendinginan k = %.4f per menit\n", k);
 
     return 0;
 }
