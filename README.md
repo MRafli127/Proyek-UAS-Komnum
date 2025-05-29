@@ -19,7 +19,7 @@ kelas : Komputasi Numerik 02
 ## Installation Guide
 
 ```
-https://github.com/MRafli127/ProyekUASMuhammadRafli
+git clone https://github.com/MRafli127/ProyekUASMuhammadRafli
 ```
 
 ### Deskripsi Proyek
